@@ -5,10 +5,9 @@
 using namespace std;
 
 int main() {
-    cout << "Hello, World! 2" << endl;
+    cout << "XOR FILTER! " << endl;
     vector<uint64_t> keys = {2, 4, 5, 7};
-    cout << "fuck";
     XorFilter* xorFilter = new XorFilter(keys);
-
+    cout << xorFilter->contains(2) << endl;
     delete xorFilter;
 }
