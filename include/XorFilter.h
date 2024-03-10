@@ -3,24 +3,31 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
+#include <stack>
 #include <functional>
-#include <bitset>
-#include <string>
+#include <utility>
+
+
+
+using namespace std;
 
 class XorFilter {
+
 private:
 
-    std::vector<std::function<size_t(const int64_t&)>> hashFunctions;
+    stack<pair<uint64_t, int>> peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds);
+    void build(vector<uint64_t> keys);
+    void assign(stack<pair<uint64_t, int>> stack, vector<uint64_t> hashFunctionSeeds);
 
 public:
-    std::vector<uint8_t> *filter;
-    XorFilter(double numBitsPerEntry, int64_t expectedNumElements);
-    XorFilter(std::vector<uint8_t>* filter, double numBitsPerEntry);
+    uint64_t* B;
+    XorFilter(vector<uint64_t> keys);
 
-    void insert(const int64_t& key);
     bool contains(const int64_t& key);
-    void write(std::string filename);
+    uint64_t h1Seed;
+    uint64_t h2Seed;
+    uint64_t h3Seed;
+    uint64_t fingerprintFunctionSeed;
 };
 
 #endif
