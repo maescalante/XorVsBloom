@@ -1,7 +1,7 @@
 #include <iostream>
 #include "XorFilter.h"
 #include <vector>
-#include <assert.h>
+#include <cstdint>
 
 
 using namespace std;
@@ -9,16 +9,7 @@ using namespace std;
 int main() {
     cout << "XOR FILTER! " << endl;
 
-    vector<uint64_t> keys = {2,4, 6, 12};
-    XorFilter* xorFilter = new XorFilter(keys);
-    cout << xorFilter->contains(2) << endl;
-    cout << xorFilter->contains(3) << endl;
-    cout << xorFilter->contains(6) << endl;
-
-    delete xorFilter;
-
-
-    size_t total_items = 1000000;
+    size_t total_items = 100000000;
 
     
     vector<uint64_t> keysTest;
@@ -55,10 +46,11 @@ int main() {
         total_queries++;
     }
 
-
+    cout << false_queries<< endl;
     cout << "false positive rate is: " 
      << static_cast<float>(100.0 * false_queries) / total_queries << "%\n";
 
+    cout<< false_queries;
     
     delete xorFilterTest;
 }

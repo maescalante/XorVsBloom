@@ -3,22 +3,11 @@
 # Compiler and flags
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -g -lstdc++fs
-LDFLAGS := -lxxhash
-
 
 # Directories
 SRC_DIR := src
 INCLUDE_DIR := include
 BIN_DIR := build
-
-
-# Vcpkg directories
-
-VCPKG_ROOT := vcpkg
-
-VCPKG_INCLUDE := $(VCPKG_ROOT)/installed/x64-linux/include
-VCPKG_LIB := $(VCPKG_ROOT)/installed/x64-linux/lib
-
 
 # Files
 HEADER_FILES := $(wildcard $(INCLUDE_DIR)/*.h)
@@ -35,11 +24,16 @@ all: $(BIN_DIR)/$(SRC_TARGET)
 # Rule to compile src files
 $(BIN_DIR)/$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADER_FILES)
 	@mkdir -p $(BIN_DIR)/$(SRC_DIR)
-	$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -I $(VCPKG_INCLUDE) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+# Rule to compile main file
+$(BIN_DIR)/$(SRC_DIR)/main.o: $(SRC_DIR)/main.cpp $(HEADER_FILES)
+	@mkdir -p $(BIN_DIR)/$(SRC_DIR)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
 # Rule to link the src executable
-$(BIN_DIR)/$(SRC_TARGET): $(SRC_OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -L $(VCPKG_LIB) -o $@ $^ $(LDFLAGS)
+$(BIN_DIR)/$(SRC_TARGET): $(OBJ_FILES) $(BIN_DIR)/$(SRC_DIR)/main.o
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Clean the project
 clean:

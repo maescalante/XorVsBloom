@@ -1,14 +1,13 @@
 #include "XorFilter.h"
 #include <cmath>
-#include <functional> 
 #include <queue>
 #include <stack>
 #include <algorithm>
 #include <utility>
-#include <random>
 #include <unordered_map>
-
-
+#include "helpers.cpp"
+#include "hashUtils.cpp"
+#include <cstdint>
 
 
 using namespace std;
@@ -18,36 +17,6 @@ XorFilter::XorFilter(vector<uint64_t> keys) {
     build(keys);
 }
 
-
-uint64_t hashFunction(uint64_t key, uint64_t seed){
-    uint64_t h = key + seed;
-    h ^= h >> 33;
-    h *= UINT64_C(0xff51afd7ed558ccd);
-    h ^= h >> 33;
-    h *= UINT64_C(0xc4ceb9fe1a85ec53);
-    h ^= h >> 33;
-    return h;
-}
-
-
-uint32_t compute_fingerprint(uint64_t key, uint64_t seed){
-    seed <<= 32;
-    uint64_t h = hashFunction(key, seed);
-    return  (uint32_t)(h ^ (h >> 32));
-}
-
-uint32_t compute_hash(uint64_t key, uint64_t seed, int index, int c){
-    uint64_t h = hashFunction(key, seed);
-    h = (uint32_t) h;
-    uint32_t rangeMin = index * (c/3);
-    uint32_t rangeMax = (c/3 * (index +1)) -1;
-    if (index == 2) {
-        rangeMax += c % 3;
-    }
-    h = h % (rangeMax - rangeMin + 1) + rangeMin;
-    
-    return (uint32_t)h;
-}
 
 bool XorFilter::contains(const uint64_t key) {
     uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->B.size());
@@ -106,21 +75,6 @@ stack<pair<uint64_t, uint32_t>> XorFilter::peel(vector<uint64_t> keys, vector<ui
 
     return stack;
 }
-
-uint64_t generateRandomUInt64() {
-    // Use a random device as a source of entropy
-    std::random_device rd;
-
-    // Use a random number engine and seed it with entropy from random device
-    std::mt19937_64 gen(rd());
-
-    // Define the range of the random numbers
-    std::uniform_int_distribution<uint64_t> dis;
-
-    // Generate a random uint64_t number
-    return dis(gen);
-}
-
 
 
 void XorFilter::assign(stack<pair<uint64_t, uint32_t>> stack) {
