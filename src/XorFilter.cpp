@@ -11,7 +11,6 @@
 
 
 using namespace std;
-using FingerprintType = uint8_t;
 using Pair = std::pair<int, int>;
 
 XorFilter::XorFilter(vector<uint64_t> keys) {
