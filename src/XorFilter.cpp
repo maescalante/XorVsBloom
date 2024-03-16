@@ -32,7 +32,6 @@ bool XorFilter::contains(const uint64_t key) {
 
 stack<pair<uint64_t, uint32_t>> XorFilter::peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds) {
     int c = floor(1.23 * keys.size()) + 32;
-   //vector<vector<uint32_t>> H(c);
     unordered_map<uint32_t, vector<uint64_t>> H;
 
     for (auto x = keys.begin(); x != keys.end(); ++x) {
@@ -65,7 +64,7 @@ stack<pair<uint64_t, uint32_t>> XorFilter::peel(vector<uint64_t> keys, vector<ui
             stack.push(make_pair(x,i));
             for (size_t j = 0; j < hashFunctionSeeds.size(); ++j) {
                 uint32_t hashValue = compute_hash(x, hashFunctionSeeds[j], j, c);
-                H[hashValue].erase(remove(H[hashValue].begin(), H[hashValue].end(), x), H[hashValue].end()); // careful you are delteng all occurrences
+                H[hashValue].erase(remove(H[hashValue].begin(), H[hashValue].end(), x), H[hashValue].end());
                 if (H[hashValue].size() == 1){
                     Q.push(hashValue);
                 }
@@ -85,14 +84,12 @@ void XorFilter::assign(stack<pair<uint64_t, uint32_t>> stack) {
         std::pair<uint64_t, uint32_t> element = stack.top();
         uint64_t x = element.first;
         uint64_t i = element.second;
-        stack.pop(); // Remove the top element from the stack
+        stack.pop(); 
         this->B[i] = 0;
         uint32_t h0 = compute_hash(x, this->h0Seed, 0, c);
         uint32_t h1 = compute_hash(x, this->h1Seed, 1, c);
         uint32_t h2 = compute_hash(x, this->h2Seed, 2, c);
         FingerprintType fp = compute_fingerprint(x, this->fingerprintSeed);
-        // so here i assume h0 was i but it might be other so ??
-
         this->B[i] = fp ^ B[h0] ^ B[h1] ^ B[h2];
     }
 }
