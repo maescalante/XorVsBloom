@@ -9,20 +9,22 @@ using namespace std;
 int main() {
     cout << "XOR FILTER! " << endl;
 
-    vector<uint64_t> keys = {2, 4, 6, 12};
+    vector<uint64_t> keys = {2,4, 6, 12};
     XorFilter* xorFilter = new XorFilter(keys);
     cout << xorFilter->contains(2) << endl;
     cout << xorFilter->contains(3) << endl;
+    cout << xorFilter->contains(6) << endl;
+
+    delete xorFilter;
 
 
-    size_t total_items = 0;
+    size_t total_items = 1000000;
 
     
     vector<uint64_t> keysTest;
 
-    // Insert items to this cuckoo filter
-    size_t num_inserted = 0;
-    for (size_t i = 0; i < total_items; i++, num_inserted++) {
+    // Insert items to this xor filter
+    for (uint64_t i = 0; i < total_items; i++) {
         keysTest.push_back(i);
     }
     XorFilter* xorFilterTest = new XorFilter(keysTest);
@@ -34,32 +36,32 @@ int main() {
     // true for all items
     size_t total_queries = 0;
     size_t true_queries = 0;
-    for (size_t i = 0; i < num_inserted; i++) {
-          if (xorFilterTest->contains(i) == 1) {
-        true_queries++;
+    for (uint64_t i = 0; i < total_items; i++) {
+        if (xorFilterTest->contains(i) == true) {
+            true_queries++;
+        }else{
+            //cout << i << endl;
         }
         total_queries++;
     }
 
-    cout << "percent of true positives: "
-            << 100.0 * true_queries / total_queries << "%\n";
+    cout << "percent of true positives: " 
+     << static_cast<float>(100.0 * true_queries) / total_queries << "%\n";
 
     // Check non-existing items, a few false positives expected
     total_queries = 0;
     size_t false_queries = 0;
-    for (size_t i = total_items; i < 2 * total_items; i++) {
-        if (xorFilterTest->contains(i) == 1) {
-        false_queries++;
+    for (uint64_t i = total_items; i < 2 * total_items; i++) {
+        if (xorFilterTest->contains(i) == true) {
+            false_queries++;
         }
         total_queries++;
     }
 
-    // Output the measured false positive rate
-    cout << "false positive rate is: "
-                << 100.0 * false_queries / total_queries << "%\n";
 
-
+    cout << "false positive rate is: " 
+     << static_cast<float>(100.0 * false_queries) / total_queries << "%\n";
 
     
-    delete xorFilter;
+    delete xorFilterTest;
 }

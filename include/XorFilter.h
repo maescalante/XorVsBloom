@@ -15,20 +15,19 @@ class XorFilter {
 
 private:
 
-    stack<pair<uint64_t, int>> peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds);
+    stack<pair<uint64_t, uint32_t>> peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds);
     void build(vector<uint64_t> keys);
-    void assign(stack<pair<uint64_t, int>> stack);
+    void assign(stack<pair<uint64_t, uint32_t>> stack);
 
 public:
     vector<uint64_t> B;
     XorFilter(vector<uint64_t> keys);
 
-    bool contains(const int64_t& key);
-    uint32_t h0Seed;
-    uint32_t h1Seed;
-    uint32_t h2Seed;
+    bool contains(const uint64_t key);
+    uint64_t h0Seed;
+    uint64_t h1Seed;
+    uint64_t h2Seed;
     uint64_t fingerprintSeed;
-    int filterSize;
 };
 
 #endif
