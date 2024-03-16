@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     cout << "XOR FILTER! " << endl;
 
-    size_t total_items = 100000000;
+    size_t total_items = 1000000;
 
     
     vector<uint64_t> keysTest;

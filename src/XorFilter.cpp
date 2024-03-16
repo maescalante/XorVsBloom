@@ -11,6 +11,7 @@
 
 
 using namespace std;
+using FingerprintType = uint8_t;
 using Pair = std::pair<int, int>;
 
 XorFilter::XorFilter(vector<uint64_t> keys) {
@@ -23,7 +24,7 @@ bool XorFilter::contains(const uint64_t key) {
     uint32_t h1 = compute_hash(key, this->h1Seed, 1, this->B.size());
     uint32_t h2 = compute_hash(key, this->h2Seed, 2, this->B.size());
 
-    uint32_t fp  = compute_fingerprint(key, this->fingerprintSeed);
+    FingerprintType fp  = compute_fingerprint(key, this->fingerprintSeed);
    
     return fp == (this->B[h0] ^ this->B[h1] ^ this->B[h2]);
 }
@@ -90,7 +91,7 @@ void XorFilter::assign(stack<pair<uint64_t, uint32_t>> stack) {
         uint32_t h0 = compute_hash(x, this->h0Seed, 0, c);
         uint32_t h1 = compute_hash(x, this->h1Seed, 1, c);
         uint32_t h2 = compute_hash(x, this->h2Seed, 2, c);
-        uint32_t fp = compute_fingerprint(x, this->fingerprintSeed);
+        FingerprintType fp = compute_fingerprint(x, this->fingerprintSeed);
         // so here i assume h0 was i but it might be other so ??
 
         this->B[i] = fp ^ B[h0] ^ B[h1] ^ B[h2];
