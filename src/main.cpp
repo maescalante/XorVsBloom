@@ -39,15 +39,12 @@ int main() {
     for (uint64_t i = 0; i < total_items; i++) {
         if (xorFilterTest->contains(i) == true) {
             true_queries++;
-        }else{
-            //cout << i << endl;
         }
         total_queries++;
     }
 
     cout << "percent of true positives: " 
      << static_cast<float>(100.0 * true_queries) / total_queries << "%\n";
-
     // Check non-existing items, a few false positives expected
     total_queries = 0;
     size_t false_queries = 0;

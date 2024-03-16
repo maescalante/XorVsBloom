@@ -28,6 +28,7 @@ public:
     uint64_t h1Seed;
     uint64_t h2Seed;
     uint64_t fingerprintSeed;
+    int buildFailures;
 };
 
 #endif

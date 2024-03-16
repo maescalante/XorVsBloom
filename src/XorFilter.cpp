@@ -163,24 +163,13 @@ void XorFilter::build(vector<uint64_t> keys) {
             flag = true; 
             this->h0Seed = seed0;
             this->h1Seed = seed1;
-            this->h2Seed = seed2;
-        }else{
+            this->h2Seed = seed2;\
+            this -> buildFailures = retryCount;
+        }else {
             retryCount++;
-            if (retryCount > 10){
-                while (!stack.empty()) {
-                    // Get the top element of the stack
-                    Pair currentPair = stack.top();
-                    // Print the pair's first and second elements
-                    std::cout << "(" << currentPair.first << ", " << currentPair.second << ")" << std::endl;
-                    // Remove the top element from the temporary stack
-                    stack.pop();
-                }
-                throw std::runtime_error("failed to build");
-            }
             cout << "failed building, retrying..."<< endl;
         }
     }
-    cout << "stack size: " <<stack.size()<< endl;
     this->B.resize(floor(1.23 * keys.size()) + 32);
 
     assign(stack);
