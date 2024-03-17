@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <cstdint>
-using FingerprintType = uint8_t;
 
 inline uint64_t hashFunction(uint64_t key, uint64_t seed){
     uint64_t h = key + seed;
@@ -15,11 +14,11 @@ inline uint64_t hashFunction(uint64_t key, uint64_t seed){
     return h;
 }
 
-
-inline uint8_t compute_fingerprint(uint64_t key, uint64_t seed){
+template<typename FingerprintType>
+inline FingerprintType compute_fingerprint(uint64_t key, uint64_t seed){
     seed <<= 32;
     uint64_t h = hashFunction(key, seed);
-    return  (FingerprintType)(h ^ (h >> 32));
+    return  static_cast<FingerprintType>(h ^ (h >> 32));
 }
 
 inline uint32_t compute_hash(uint64_t key, uint64_t seed, int index, int c){

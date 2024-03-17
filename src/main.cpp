@@ -18,7 +18,7 @@ int main() {
     for (uint64_t i = 0; i < total_items; i++) {
         keysTest.push_back(i);
     }
-    XorFilter* xorFilterTest = new XorFilter(keysTest);
+    XorFilter<uint8_t> xorFilterTest(keysTest);
 
     
     cout << "tests"<< endl;
@@ -28,7 +28,7 @@ int main() {
     size_t total_queries = 0;
     size_t true_queries = 0;
     for (uint64_t i = 0; i < total_items; i++) {
-        if (xorFilterTest->contains(i) == true) {
+        if (xorFilterTest.contains(i) == true) {
             true_queries++;
         }
         total_queries++;
@@ -40,17 +40,12 @@ int main() {
     total_queries = 0;
     size_t false_queries = 0;
     for (uint64_t i = total_items; i < 2 * total_items; i++) {
-        if (xorFilterTest->contains(i) == true) {
+        if (xorFilterTest.contains(i) == true) {
             false_queries++;
         }
         total_queries++;
     }
 
-    cout << false_queries<< endl;
     cout << "false positive rate is: " 
      << static_cast<float>(100.0 * false_queries) / total_queries << "%\n";
-
-    cout<< false_queries;
-    
-    delete xorFilterTest;
 }

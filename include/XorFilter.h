@@ -10,7 +10,7 @@
 
 
 using namespace std;
-
+template<typename FingerprintType>
 class XorFilter {
 
 private:
@@ -21,7 +21,7 @@ private:
 
 public:
     vector<uint64_t> B;
-    XorFilter(vector<uint64_t> keys);
+    XorFilter<FingerprintType>(vector<uint64_t> keys);
 
     bool contains(const uint64_t key);
     uint64_t h0Seed;
@@ -29,6 +29,7 @@ public:
     uint64_t h2Seed;
     uint64_t fingerprintSeed;
     int buildFailures;
+
 };
 
 #endif

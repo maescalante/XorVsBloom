@@ -13,24 +13,26 @@
 using namespace std;
 using Pair = std::pair<int, int>;
 
-XorFilter::XorFilter(vector<uint64_t> keys) {
+
+template<typename FingerprintType>
+XorFilter<FingerprintType>::XorFilter(vector<uint64_t> keys) {
     build(keys);
 }
 
-
-bool XorFilter::contains(const uint64_t key) {
+template<typename FingerprintType>
+bool XorFilter<FingerprintType>::contains(const uint64_t key) {
     uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->B.size());
     uint32_t h1 = compute_hash(key, this->h1Seed, 1, this->B.size());
     uint32_t h2 = compute_hash(key, this->h2Seed, 2, this->B.size());
 
-    FingerprintType fp  = compute_fingerprint(key, this->fingerprintSeed);
+    FingerprintType fp  = compute_fingerprint<FingerprintType>(key, this->fingerprintSeed);
    
     return fp == (this->B[h0] ^ this->B[h1] ^ this->B[h2]);
 }
 
 
-
-stack<pair<uint64_t, uint32_t>> XorFilter::peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds) {
+template<typename FingerprintType>
+stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds) {
     int c = floor(1.23 * keys.size()) + 32;
     unordered_map<uint32_t, vector<uint64_t>> H;
 
@@ -75,8 +77,8 @@ stack<pair<uint64_t, uint32_t>> XorFilter::peel(vector<uint64_t> keys, vector<ui
     return stack;
 }
 
-
-void XorFilter::assign(stack<pair<uint64_t, uint32_t>> stack) {
+template<typename FingerprintType>
+void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>> stack) {
     this -> fingerprintSeed = generateRandomUInt64();
     int c = floor(1.23 * stack.size()) + 32;
 
@@ -89,13 +91,13 @@ void XorFilter::assign(stack<pair<uint64_t, uint32_t>> stack) {
         uint32_t h0 = compute_hash(x, this->h0Seed, 0, c);
         uint32_t h1 = compute_hash(x, this->h1Seed, 1, c);
         uint32_t h2 = compute_hash(x, this->h2Seed, 2, c);
-        FingerprintType fp = compute_fingerprint(x, this->fingerprintSeed);
+        FingerprintType fp = compute_fingerprint<FingerprintType>(x, this->fingerprintSeed);
         this->B[i] = fp ^ B[h0] ^ B[h1] ^ B[h2];
     }
 }
 
-
-void XorFilter::build(vector<uint64_t> keys) {
+template<typename FingerprintType>
+void XorFilter<FingerprintType>::build(vector<uint64_t> keys) {
     
     bool flag = false;
     stack<pair<uint64_t, uint32_t>> stack;
@@ -125,3 +127,5 @@ void XorFilter::build(vector<uint64_t> keys) {
 
     assign(stack);
 }
+template class XorFilter<uint8_t>;
+template class XorFilter<uint16_t>;
