@@ -1,6 +1,3 @@
-#ifndef HELPERS_H
-#define HELPERS_H
-
 #include <random>
 #include <iostream>
 #include <cstdint>
@@ -20,5 +17,3 @@ inline uint64_t generateRandomUInt64() {
     // Generate a random uint64_t number
     return dis(gen);
 }
-
-#endif

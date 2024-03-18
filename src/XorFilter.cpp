@@ -13,12 +13,6 @@
 using namespace std;
 using Pair = std::pair<int, int>;
 
-
-template<typename FingerprintType>
-XorFilter<FingerprintType>::XorFilter(vector<uint64_t> keys) {
-    build(keys);
-}
-
 template<typename FingerprintType>
 bool XorFilter<FingerprintType>::contains(const uint64_t key) {
     uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->B.size());
@@ -32,7 +26,7 @@ bool XorFilter<FingerprintType>::contains(const uint64_t key) {
 
 
 template<typename FingerprintType>
-stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t> keys, vector<uint64_t> hashFunctionSeeds) {
+stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t>& keys, vector<uint64_t>& hashFunctionSeeds) {
     int c = floor(1.23 * keys.size()) + 32;
     unordered_map<uint32_t, vector<uint64_t>> H;
 
@@ -78,7 +72,7 @@ stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t
 }
 
 template<typename FingerprintType>
-void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>> stack) {
+void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>>& stack) {
     this -> fingerprintSeed = generateRandomUInt64();
     int c = floor(1.23 * stack.size()) + 32;
 
@@ -97,7 +91,7 @@ void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>> stack) {
 }
 
 template<typename FingerprintType>
-void XorFilter<FingerprintType>::build(vector<uint64_t> keys) {
+void XorFilter<FingerprintType>::build(vector<uint64_t>& keys) {
     
     bool flag = false;
     stack<pair<uint64_t, uint32_t>> stack;

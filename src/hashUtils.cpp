@@ -1,6 +1,3 @@
-#ifndef HASHUTILS_H
-#define HASHUTILS_H
-
 #include <iostream>
 #include <cstdint>
 
@@ -33,5 +30,3 @@ inline uint32_t compute_hash(uint64_t key, uint64_t seed, int index, int c){
     
     return (uint32_t)h;
 }
-
-#endif 
