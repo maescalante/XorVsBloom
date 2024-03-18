@@ -19,7 +19,7 @@ private:
     void assign(stack<pair<uint64_t, uint32_t>>& stack);
 
 public:
-    vector<uint64_t> B;
+    vector<FingerprintType> B;
     void build(vector<uint64_t>& keys);
 
     bool contains(const uint64_t key);
