@@ -31,8 +31,9 @@ inline vector<uint64_t> generateUniqueRandomNumbers(uint64_t min, uint64_t max, 
 
 
 inline void deleteRandomPercentage(vector<uint64_t>& numbers, double percentage) {
-   if (percentage <= 0.0 || percentage >= 100.0)
+   if (percentage <= 0.0 || percentage >= 100.0){
         return; // No elements to delete or delete all elements
+   }
 
     size_t numToDelete = static_cast<size_t>(numbers.size() * (percentage / 100.0));
     random_device rd;

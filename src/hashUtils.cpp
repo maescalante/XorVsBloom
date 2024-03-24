@@ -30,3 +30,9 @@ inline uint32_t compute_hash(uint64_t key, uint64_t seed, int index, int c){
     
     return (uint32_t)h;
 }
+
+inline uint32_t compute_hash(uint64_t key, uint64_t seed){
+    uint64_t h = hashFunction(key, seed);
+    h = (uint32_t) h;
+    return (uint32_t)h;
+}

@@ -17,3 +17,11 @@ inline uint64_t generateRandomUInt64() {
     // Generate a random uint64_t number
     return dis(gen);
 }
+
+inline float calculateAverage(const vector<float>& vec) {
+    float sum = 0.0f;
+    for (float value : vec) {
+        sum += value;
+    }
+    return sum / vec.size();
+}

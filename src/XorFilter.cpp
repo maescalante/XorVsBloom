@@ -11,17 +11,16 @@
 
 
 using namespace std;
-using Pair = std::pair<int, int>;
 
 template<typename FingerprintType>
-bool XorFilter<FingerprintType>::contains(const uint64_t key) {
-    uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->B.size());
-    uint32_t h1 = compute_hash(key, this->h1Seed, 1, this->B.size());
-    uint32_t h2 = compute_hash(key, this->h2Seed, 2, this->B.size());
+bool XorFilter<FingerprintType>::contains(uint64_t key) {
+    uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->filter.size());
+    uint32_t h1 = compute_hash(key, this->h1Seed, 1, this->filter.size());
+    uint32_t h2 = compute_hash(key, this->h2Seed, 2, this->filter.size());
 
     FingerprintType fp  = compute_fingerprint<FingerprintType>(key, this->fingerprintSeed);
    
-    return fp == (this->B[h0] ^ this->B[h1] ^ this->B[h2]);
+    return fp == (this->filter[h0] ^ this->filter[h1] ^ this->filter[h2]);
 }
 
 
@@ -81,12 +80,12 @@ void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>>& stack) 
         uint64_t x = element.first;
         uint64_t i = element.second;
         stack.pop(); 
-        this->B[i] = 0;
+        this->filter[i] = 0;
         uint32_t h0 = compute_hash(x, this->h0Seed, 0, c);
         uint32_t h1 = compute_hash(x, this->h1Seed, 1, c);
         uint32_t h2 = compute_hash(x, this->h2Seed, 2, c);
         FingerprintType fp = compute_fingerprint<FingerprintType>(x, this->fingerprintSeed);
-        this->B[i] = fp ^ B[h0] ^ B[h1] ^ B[h2];
+        this->filter[i] = fp ^ filter[h0] ^ filter[h1] ^ filter[h2];
     }
 }
 
@@ -117,9 +116,15 @@ void XorFilter<FingerprintType>::build(vector<uint64_t>& keys) {
             cout << "failed building, retrying..."<< endl;
         }
     }
-    this->B.resize(floor(1.23 * keys.size()) + 32);
+    this->filter.resize(floor(1.23 * keys.size()) + 32);
 
     assign(stack);
 }
+
+template<typename FingerprintType>
+vector<FingerprintType> XorFilter<FingerprintType>::getFilter() {
+    return this->filter;
+}
+
 template class XorFilter<uint8_t>;
 template class XorFilter<uint16_t>;
