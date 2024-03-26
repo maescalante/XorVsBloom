@@ -10,6 +10,5 @@ using namespace std;
 int main() {
     cout << "XOR FILTER! " << endl;
     size_t iterations = 3;
-    runForKeys(iterations, 0.25);
-
+    runForFractionKeys(iterations, 1000000);
 }

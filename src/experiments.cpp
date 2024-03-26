@@ -84,7 +84,7 @@ inline void runExperiment(vector<string> filenames, Filter<T> *filter, size_t to
 
 
 
-inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations, float fractionKeysNotInSet, bool print=false){
+inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations, double fractionKeysNotInSet, bool print=false){
     Filter<bool>* bloom8 =  new BloomFilter<bool>(8);
     cout << "Running for Bloom8, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
     runExperiment(filenames, bloom8, keyNum, iterations, fractionKeysNotInSet, print = false);
@@ -136,12 +136,12 @@ inline void writeHeaders(vector<string> filenames, string independentVar){
 
 
 inline void runForKeys(size_t iterations, double fractionKeysNotInSet, bool print = false){
-    vector<string> expFilenames = formatFilenames("keys");
+    vector<string> expFilenames = formatFilenames("keys2");
     resetFiles(expFilenames);
 
     writeHeaders(expFilenames, "#Keys");
 
-    vector<uint64_t> keyNums = {10000, 100000, 1000000, 10000000, 100000000};
+    vector<uint64_t> keyNums = {10000, 100000, 1000000, 10000000};
     for (const auto& keyNum : keyNums) {
         writeToCSV(expFilenames, to_string(keyNum));
         runForAll(expFilenames, keyNum, iterations, fractionKeysNotInSet);
