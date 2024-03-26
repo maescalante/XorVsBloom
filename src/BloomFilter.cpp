@@ -33,7 +33,6 @@ void BloomFilter<T>::build(vector<uint64_t>& keys) {
     }
 }
 
-
 template<typename T>
 bool BloomFilter<T>::contains(uint64_t key) {
     for (const auto& seed : this->hashSeeds) {

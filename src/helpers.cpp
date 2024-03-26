@@ -1,6 +1,7 @@
 #include <random>
 #include <iostream>
 #include <cstdint>
+#include <fstream>
 
 using namespace std;
 
@@ -24,4 +25,36 @@ inline float calculateAverage(const vector<float>& vec) {
         sum += value;
     }
     return sum / vec.size();
+}
+
+
+inline void writeToCSV(const string& filename, const string data) {
+    ofstream file(filename, ios::app); // Open file in append mode
+    if (!file.is_open()) {
+        cerr << "Error: Unable to open file: " << filename << endl;
+        return;
+    }
+
+    file << data;
+    if (data != "\n"){
+        file << ","; 
+    }
+    file.close();
+}
+
+
+inline void writeToCSV(const vector<string>& filenames, const string data) {
+    for (string filename : filenames){
+        ofstream file(filename, ios::app); // Open file in append mode
+        if (!file.is_open()) {
+            cerr << "Error: Unable to open file: " << filename << endl;
+            return;
+        }
+
+        file << data;
+        if (data != "\n"){
+            file << ","; 
+        }
+        file.close();
+    }
 }

@@ -11,21 +11,21 @@
 using namespace std;
 
 inline vector<uint64_t> generateUniqueRandomNumbers(uint64_t min, uint64_t max, size_t count) {
-
     vector<uint64_t> uniqueNumbers;
-    unordered_set<uint64_t> seenNumbers; // Hash set to keep track of generated numbers
+    uniqueNumbers.reserve(max - min + 1);
+    
+    // Generate all possible unique numbers within the range
+    for (uint64_t i = min; i <= max; ++i) {
+        uniqueNumbers.push_back(i);
+    }
+    
+    // Shuffle the numbers randomly
     random_device rd;
     mt19937_64 gen(rd());
-    uniform_int_distribution<uint64_t> distribution(min, max);
-
-    while (uniqueNumbers.size() < count) {
-        uint64_t num = distribution(gen);
-        if (seenNumbers.find(num) == seenNumbers.end()) {
-            uniqueNumbers.push_back(num);
-            seenNumbers.insert(num);
-        }
-    }
-
+    shuffle(uniqueNumbers.begin(), uniqueNumbers.end(), gen);
+    
+    // Resize to the desired count and return
+    uniqueNumbers.resize(count);
     return uniqueNumbers;
 }
 
