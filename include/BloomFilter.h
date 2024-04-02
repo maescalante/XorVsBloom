@@ -20,6 +20,8 @@ public:
     void build(vector<uint64_t>& keys);
     bool contains(uint64_t key) override;
     vector<T> getFilter() override;
+    int getMemoryOccupied() override;
+
 };
 
 #endif

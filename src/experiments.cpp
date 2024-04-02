@@ -55,9 +55,7 @@ inline void runExperiment(vector<string> filenames, Filter<T> *filter, size_t to
         fprs.push_back(fpr(found, intersectionSize, data.size()));
 
         // Calculate memory occupied by the elements
-        size_t elementSize = filter->getFilter().size() * sizeof(filter->getFilter()[0]);
-        memoryOccupied.push_back(elementSize);
-
+        memoryOccupied.push_back(filter->getMemoryOccupied());
         i++;
     }
 
@@ -93,6 +91,13 @@ inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations
     cout << "Running for Bloom10, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
     runExperiment(filenames, bloom10, keyNum, iterations, fractionKeysNotInSet, print = false);
 
+    Filter<bool>* bloom12 =  new BloomFilter<bool>(12);
+    cout << "Running for Bloom12, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
+    runExperiment(filenames, bloom12, keyNum, iterations, fractionKeysNotInSet, print = false);
+
+    Filter<bool>* bloom16 =  new BloomFilter<bool>(16);
+    cout << "Running for Bloom16, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
+    runExperiment(filenames, bloom16, keyNum, iterations, fractionKeysNotInSet, print = false);
 
     Filter<uint8_t>* xorFilter8 = new XorFilter<uint8_t>();
     cout << "Running for Xor 8, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
@@ -104,6 +109,8 @@ inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations
 
     delete bloom8;
     delete bloom10;
+    delete bloom12;
+    delete bloom16;
     delete xorFilter8;
     delete xorFilter16;
 }
@@ -129,14 +136,18 @@ inline void writeHeaders(vector<string> filenames, string independentVar){
     writeToCSV(filenames, independentVar);
     writeToCSV(filenames, "Bloom8");
     writeToCSV(filenames, "Bloom10");
+    writeToCSV(filenames, "Bloom12");
+    writeToCSV(filenames, "Bloom16");
+
     writeToCSV(filenames, "Xor8");
     writeToCSV(filenames, "Xor16");
+    writeToCSV(filenames, "Xor32");
     writeToCSV(filenames, "\n");
 }
 
 
-inline void runForKeys(size_t iterations, double fractionKeysNotInSet, bool print = false){
-    vector<string> expFilenames = formatFilenames("keys2");
+inline void runForKeys(size_t iterations, double fractionKeysNotInSet, string filename, bool print = false){
+    vector<string> expFilenames = formatFilenames(filename);
     resetFiles(expFilenames);
 
     writeHeaders(expFilenames, "#Keys");

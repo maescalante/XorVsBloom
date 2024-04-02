@@ -49,4 +49,10 @@ vector<T> BloomFilter<T>::getFilter() {
     return this->filter;
 }
 
+
+template<typename T>
+int BloomFilter<T>::getMemoryOccupied() {
+    return  this->filter.size();
+}
+
 template class BloomFilter<bool>;

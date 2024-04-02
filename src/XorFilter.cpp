@@ -8,6 +8,8 @@
 #include "helpers.cpp"
 #include "hashUtils.cpp"
 #include <cstdint>
+#include <future>
+#include <thread>
 
 
 using namespace std;
@@ -35,7 +37,7 @@ stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t
             if (H.find(hashValue) != H.end()){
                 H[hashValue].push_back(*x);
             } else {
-                vector<uint64_t> vec = {*x};
+                vector<uint64_t> vec = {*x};      
                 H[hashValue] = vec;
             }
         }
@@ -69,6 +71,7 @@ stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t
 
     return stack;
 }
+
 
 template<typename FingerprintType>
 void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>>& stack) {
@@ -109,7 +112,7 @@ void XorFilter<FingerprintType>::build(vector<uint64_t>& keys) {
             flag = true; 
             this->h0Seed = seed0;
             this->h1Seed = seed1;
-            this->h2Seed = seed2;\
+            this->h2Seed = seed2;
             this -> buildFailures = retryCount;
         }else {
             retryCount++;
@@ -125,6 +128,12 @@ template<typename FingerprintType>
 vector<FingerprintType> XorFilter<FingerprintType>::getFilter() {
     return this->filter;
 }
+
+template<typename FingerprintType>
+int XorFilter<FingerprintType>::getMemoryOccupied() {
+    return  this->filter.size() * sizeof(FingerprintType);
+}
+
 
 template class XorFilter<uint8_t>;
 template class XorFilter<uint16_t>;

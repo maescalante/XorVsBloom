@@ -27,6 +27,7 @@ public:
     void build(vector<uint64_t>& keys) override;
     bool contains(uint64_t key) override;
     vector<FingerprintType> getFilter() override;
+    int getMemoryOccupied() override;
     int buildFailures;
 
 };
