@@ -141,7 +141,6 @@ inline void writeHeaders(vector<string> filenames, string independentVar){
 
     writeToCSV(filenames, "Xor8");
     writeToCSV(filenames, "Xor16");
-    writeToCSV(filenames, "Xor32");
     writeToCSV(filenames, "\n");
 }
 
