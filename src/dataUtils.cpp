@@ -10,6 +10,9 @@
 
 using namespace std;
 
+/*
+Generate a vector of unique uint64 random numbers in a range for testing
+*/
 inline vector<uint64_t> generateUniqueRandomNumbers(uint64_t min, uint64_t max, size_t count) {
     vector<uint64_t> uniqueNumbers;
     uniqueNumbers.reserve(max - min + 1);
@@ -29,7 +32,9 @@ inline vector<uint64_t> generateUniqueRandomNumbers(uint64_t min, uint64_t max, 
     return uniqueNumbers;
 }
 
-
+/*
+Remove a random percentage of the numbers in the vector
+*/
 inline void deleteRandomPercentage(vector<uint64_t>& numbers, double percentage) {
    if (percentage <= 0.0 || percentage >= 100.0){
         return; // No elements to delete or delete all elements
@@ -48,7 +53,9 @@ inline void deleteRandomPercentage(vector<uint64_t>& numbers, double percentage)
 }
 
 
-
+/*
+Replace a percetage of numbers in a vector for numbers that were not previously present
+*/
 inline void replaceNumbers(std::vector<uint64_t>& numbers, double percentage) {
     auto maxIterator = max_element(numbers.begin(), numbers.end());
     int previousSize = numbers.size();

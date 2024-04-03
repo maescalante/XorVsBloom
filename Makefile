@@ -2,7 +2,7 @@
 
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -g -lstdc++fs
+CXXFLAGS := -std=c++17 -Wall -g -lstdc++fs -pthread
 
 # Directories
 SRC_DIR := src

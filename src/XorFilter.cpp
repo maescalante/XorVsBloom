@@ -14,6 +14,9 @@
 
 using namespace std;
 
+/*
+Check if a given key is present in the filter
+*/
 template<typename FingerprintType>
 bool XorFilter<FingerprintType>::contains(uint64_t key) {
     uint32_t h0 = compute_hash(key, this->h0Seed, 0, this->filter.size());
@@ -25,7 +28,9 @@ bool XorFilter<FingerprintType>::contains(uint64_t key) {
     return fp == (this->filter[h0] ^ this->filter[h1] ^ this->filter[h2]);
 }
 
-
+/*
+Peeling operation to construct the xor filter
+*/
 template<typename FingerprintType>
 stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t>& keys, vector<uint64_t>& hashFunctionSeeds) {
     int c = floor(1.23 * keys.size()) + 32;
@@ -72,7 +77,9 @@ stack<pair<uint64_t, uint32_t>> XorFilter<FingerprintType>::peel(vector<uint64_t
     return stack;
 }
 
-
+/*
+Assign all entries to the slots found in the peeling step 
+*/
 template<typename FingerprintType>
 void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>>& stack) {
     this -> fingerprintSeed = generateRandomUInt64();
@@ -92,6 +99,9 @@ void XorFilter<FingerprintType>::assign(stack<pair<uint64_t, uint32_t>>& stack) 
     }
 }
 
+/*
+Build Xor filter
+*/
 template<typename FingerprintType>
 void XorFilter<FingerprintType>::build(vector<uint64_t>& keys) {
     
@@ -124,14 +134,28 @@ void XorFilter<FingerprintType>::build(vector<uint64_t>& keys) {
     assign(stack);
 }
 
+/*
+return filter
+*/
 template<typename FingerprintType>
 vector<FingerprintType> XorFilter<FingerprintType>::getFilter() {
     return this->filter;
 }
 
+/*
+Get memory occupied by the filter
+*/
 template<typename FingerprintType>
 int XorFilter<FingerprintType>::getMemoryOccupied() {
     return  this->filter.size() * sizeof(FingerprintType);
+}
+
+/*
+Reset filter 
+*/
+template<typename FingerprintType>
+void XorFilter<FingerprintType>::resetFilter() {
+    this->filter.clear();
 }
 
 

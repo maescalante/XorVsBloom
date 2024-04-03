@@ -1,5 +1,5 @@
-#ifndef XOR_FILTER_H
-#define XOR_FILTER_H
+#ifndef FAST_XOR_FILTER_H
+#define FAST_XOR_FILTER_H
 
 #include <iostream>
 #include <vector>
@@ -11,11 +11,9 @@
 
 using namespace std;
 template<typename FingerprintType>
-class XorFilter: public Filter<FingerprintType> {
+class FastXorFilter: public Filter<FingerprintType> {
 
 private:
-
-    stack<pair<uint64_t, uint32_t>> peel(vector<uint64_t>& keys, vector<uint64_t>& hashFunctionSeeds);
     void assign(stack<pair<uint64_t, uint32_t>>& stack);
     uint64_t h0Seed;
     uint64_t h1Seed;
@@ -29,7 +27,6 @@ public:
     vector<FingerprintType> getFilter() override;
     int getMemoryOccupied() override;
     int buildFailures;
-    void resetFilter() override;
 
 };
 

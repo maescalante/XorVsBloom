@@ -12,6 +12,9 @@ template<typename T>
 BloomFilter<T>::BloomFilter(size_t bitsPerEntry): bitsPerEntry(bitsPerEntry) {
 }
 
+/*
+build bloom filter which includes adding the keys
+*/
 template<typename T>
 void BloomFilter<T>::build(vector<uint64_t>& keys) {
     size_t numKeys = keys.size();
@@ -33,6 +36,9 @@ void BloomFilter<T>::build(vector<uint64_t>& keys) {
     }
 }
 
+/*
+Check if a key si present in the filter
+*/
 template<typename T>
 bool BloomFilter<T>::contains(uint64_t key) {
     for (const auto& seed : this->hashSeeds) {
@@ -44,15 +50,28 @@ bool BloomFilter<T>::contains(uint64_t key) {
     return true;
 }
 
+/*
+Return filter
+*/
 template<typename T>
 vector<T> BloomFilter<T>::getFilter() {
     return this->filter;
 }
 
-
+/*
+Get memory occupied by the filter
+*/
 template<typename T>
 int BloomFilter<T>::getMemoryOccupied() {
-    return  this->filter.size();
+    return  this->filter.size()/8;
+}
+
+/*
+Reset filter
+*/
+template<typename T>
+void BloomFilter<T>::resetFilter() {
+    return  this->filter.clear();
 }
 
 template class BloomFilter<bool>;

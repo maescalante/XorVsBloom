@@ -13,8 +13,9 @@
 
 
 using namespace std;
-const vector<string> resultFilenames = { "fpr", "constructionTime", "memory", "timePerKey", "memoryPerKey"};
+const vector<string> resultFilenames = { "fpr", "constructionTime(ms)", "memory(bytes)", "timePerKey(ms)", "memoryPerKey(bytes)", "AvgQueryTimePerKey(ns)"};
 
+// Aux function to print results to console
 inline void printResults(float fpr,float time,float mem, float timePerKey, float memPerkey){
     cout << "filter construction time: " << time << " ms" << endl;
     cout << "false positive rate is: " << fpr << "%\n";
@@ -29,28 +30,40 @@ inline void runExperiment(vector<string> filenames, Filter<T> *filter, size_t to
     vector<float> fprs;
     vector<float> constructionTimes;
     vector<float> memoryOccupied;
+    vector<float> queryTimePerKey;
 
     size_t i = 0;
     while (i < iterations) {
+        filter->resetFilter();
 
-        // Insert items to this xor filter
+        // Insert items to the filter
         vector<uint64_t> data = generateUniqueRandomNumbers(0, totalItems*100, totalItems);
 
-        // Measure the execution time and construct XorFilter object
+        // Measure the execution time and construct filter 
         double timeTaken = measureExecutionTime([&]() {
             filter->build(data);
         });
 
         constructionTimes.push_back(timeTaken);
-        size_t intersectionSize = data.size() * (1-fractionKeysNotInSet);
+
+        // Remove a percentage of keys from the inserted data
+        size_t intersectionSize = data.size() * (1 - fractionKeysNotInSet);
         replaceNumbers(data, fractionKeysNotInSet*100);
-        // Check non-existing items, a few false positives expected
+        vector<float> avgQueryTimePerKey;
+
+        // calculate false positive ratio by checking how many keys in the set are present
         size_t found = 0;
         for (uint64_t i = 0; i < totalItems; i++) {
-            if (filter->contains(data[i]) == true) {
+            auto start = chrono::high_resolution_clock::now(); // Get the current time before executing the function
+            bool contains = filter->contains(data[i]);
+            auto end = chrono::high_resolution_clock::now();
+            auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+            avgQueryTimePerKey.push_back(duration.count());
+            if ( contains == true) {
                 found++;
             }
         }
+        queryTimePerKey.push_back(calculateAverage(avgQueryTimePerKey));
 
         fprs.push_back(fpr(found, intersectionSize, data.size()));
 
@@ -62,10 +75,11 @@ inline void runExperiment(vector<string> filenames, Filter<T> *filter, size_t to
     float fpr = calculateAverage(fprs);
     float time = calculateAverage(constructionTimes);
     float mem = calculateAverage(memoryOccupied); 
+    float queryTimePerKeyVal = calculateAverage(queryTimePerKey);
     float timePerKey = time/totalItems;
     float memPerKey = mem/totalItems;
 
-    vector<float> results = {fpr, time, mem, timePerKey, memPerKey};
+    vector<float> results = {fpr, time, mem, timePerKey, memPerKey, queryTimePerKeyVal};
 
     if(print) {
         printResults(fpr, time, mem, timePerKey, memPerKey);
@@ -76,12 +90,16 @@ inline void runExperiment(vector<string> filenames, Filter<T> *filter, size_t to
     writeToCSV(filenames[2], to_string(mem));
     writeToCSV(filenames[3], to_string(timePerKey));
     writeToCSV(filenames[4], to_string(memPerKey));
+    writeToCSV(filenames[5], to_string(queryTimePerKeyVal));
+
 }
 
 
 
 
-
+/*
+Run experiment for varying bits per key 
+*/
 inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations, double fractionKeysNotInSet, bool print=false){
     Filter<bool>* bloom8 =  new BloomFilter<bool>(8);
     cout << "Running for Bloom8, # of keys: " << keyNum << ", fraction of keys not in set: " << fractionKeysNotInSet << endl;
@@ -115,6 +133,9 @@ inline void runForAll(vector<string> filenames, size_t keyNum, size_t iterations
     delete xorFilter16;
 }
 
+/*
+Adjust filenames depending on experiments
+*/
 inline vector<string> formatFilenames(string folder){
     vector<string> newFilenames;
     for (string file : resultFilenames){
@@ -124,6 +145,9 @@ inline vector<string> formatFilenames(string folder){
 
 }
 
+/*
+Cleanup files before starting experiments
+*/
 inline void resetFiles(vector<string> filenames){
     for (string filename: filenames){
         ofstream outputFile(filename, ofstream::out | ofstream::trunc);
@@ -131,7 +155,9 @@ inline void resetFiles(vector<string> filenames){
     } 
 }
 
-
+/*
+Write headers to csv file
+*/
 inline void writeHeaders(vector<string> filenames, string independentVar){   
     writeToCSV(filenames, independentVar);
     writeToCSV(filenames, "Bloom8");
@@ -144,7 +170,9 @@ inline void writeHeaders(vector<string> filenames, string independentVar){
     writeToCSV(filenames, "\n");
 }
 
-
+/*
+Run experiment for vaarying keys 
+*/
 inline void runForKeys(size_t iterations, double fractionKeysNotInSet, string filename, bool print = false){
     vector<string> expFilenames = formatFilenames(filename);
     resetFiles(expFilenames);
@@ -160,6 +188,9 @@ inline void runForKeys(size_t iterations, double fractionKeysNotInSet, string fi
     writeToCSV(expFilenames, "\n");
 }
 
+/*
+Run experiment for varying fraction of keys not present in data set
+*/
 inline void runForFractionKeys(size_t iterations, size_t numKeys, bool print = false){
     vector<string> expFilenames = formatFilenames("fractionKeys");
     resetFiles(expFilenames);
